@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Bring Sally Up · Dynamic 14-Day Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #f7f8fa;
+      color: #1a1e24;
+      line-height: 1.5;
+      padding: 1.5rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .app {
+      max-width: 780px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08), 0 8px 24px -6px rgba(0, 0, 0, 0.05);
+      padding: 2rem 1.75rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(235, 239, 245, 0.6);
+    }
+    @media (max-width: 500px) {
+      body { padding: 0.75rem; align-items: flex-start; }
+      .app { padding: 1.5rem 1rem; border-radius: 24px; }
+    }
+    .hero { margin-bottom: 2rem; }
+    .hero h1 { font-size: 1.8rem; font-weight: 600; letter-spacing: -0.02em; color: #0e121b; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hero p { font-size: 0.95rem; color: #54657e; max-width: 540px; }
+    .section-title { font-size: 1rem; font-weight: 600; color: #1a2634; margin-bottom: 0.75rem; letter-spacing: -0.01em; }
+    
+    .category-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-beginner { background: #e3f0da; color: #2c6217; }
+    .badge-novice { background: #fdf3e2; color: #7a5200; }
+    .badge-intermediate { background: #e5eef9; color: #195a9c; }
+    .badge-advanced { background: #fae6ed; color: #a12e5e; }
+
+    .baseline-bar {
+      background: #f1f4f9;
+      border-radius: 24px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      border: 1px solid #e9edf2;
+    }
+    .baseline-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 0.2rem 0.5rem;
+      border-radius: 40px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.03);
+      border: 1px solid #dee4ec;
+    }
+    .time-input {
+      width: 60px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 0.5rem 0.2rem;
+      border: none;
+      background: transparent;
+      color: #0e1a2b;
+      font-family: 'Inter', monospace;
+      outline: none;
+    }
+    .time-sep { font-weight: 600; color: #7689a5; }
+    .btn-primary {
+      background: #1d2b3f;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 8px -4px rgba(0, 20, 40, 0.12);
+      border: 1px solid #253449;
+    }
+    .btn-primary:hover { background: #2c405b; transform: scale(0.98); }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #cfd9e6;
+      color: #2f4057;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .btn-secondary:hover { background: #f0f4fa; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+    .metric {
+      background: #fafcff;
+      border-radius: 20px;
+      padding: 1rem 0.8rem;
+      border: 1px solid #eef2f8;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+    }
+    .metric .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px; color: #5f7390; margin-bottom: 6px; font-weight: 500; }
+    .metric .value { font-size: 1.9rem; font-weight: 600; color: #121926; line-height: 1.2; }
+    .metric .sub { font-size: 0.7rem; color: #778aa4; margin-top: 4px; }
+
+    .confidence-meter {
+      background: #f1f4f9;
+      border-radius: 40px;
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .confidence-bar {
+      flex: 1;
+      height: 8px;
+      background: #dee4ec;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6f9e55, #2b6eb3);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1.75rem;
+      background: #f2f5f9;
+      padding: 6px;
+      border-radius: 48px;
+      border: 1px solid #e6eaf0;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.65rem 0.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #496183;
+      border-radius: 40px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .tab.active {
+      background: white;
+      color: #101a28;
+      box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0,0,0,0.02);
+      border: 1px solid #dde3ed;
+      font-weight: 600;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 1.2rem;
+    }
+    .day-cell {
+      aspect-ratio: 1/1.1;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      padding: 4px 2px;
+    }
+    .day-cell:hover { border-color: #a7b8d0; background: #fdfdfe; transform: translateY(-1px); }
+    .day-cell .day-num { font-size: 0.9rem; font-weight: 600; color: #33445c; }
+    .day-cell .day-type { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2px; margin-top: 4px; opacity: 0.75; }
+    
+    .day-cell.done { background: #eef6e6; border-color: #a0c28b; }
+    .day-cell.done .day-num { color: #2f5e1d; }
+    .day-cell.test-day { border-color: #f3c98b; background: #fdf3e2; }
+    .day-cell.test-day .day-num { color: #7a5200; }
+    .day-cell.today { border: 2px solid #2b6eb3; box-shadow: 0 0 0 2px rgba(43, 110, 179, 0.15); animation: pulseGlow 2s infinite; }
+    @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(43,110,179,0.2); } 70% { box-shadow: 0 0 0 6px rgba(43,110,179,0); } 100% { box-shadow: 0 0 0 0 transparent; } }
+    
+    .day-cell .check { font-size: 12px; margin-top: 2px; color: #3f7a2c; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 1rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; font-weight: 500; color: #44566c; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 6px; }
+
+    .day-detail {
+      background: white;
+      border: 1px solid #e9eef4;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 12px -6px rgba(0,0,0,0.04);
+    }
+    .day-detail h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .desc { font-size: 0.9rem; color: #4e6580; margin-bottom: 1.2rem; }
+
+    .exercises { display: flex; flex-direction: column; gap: 8px; }
+    .ex-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #f9fbfd;
+      border-radius: 16px;
+      border: 1px solid #eef2f6;
+    }
+    .ex-name { flex: 1; font-weight: 500; color: #1f2d42; }
+    .ex-target { font-size: 0.85rem; background: #eef2f7; padding: 4px 10px; border-radius: 30px; color: #2f4769; font-weight: 500; }
+    .ex-done {
+      width: 26px; height: 26px; border-radius: 26px; border: 1.5px solid #b7c6da;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      background: white; color: #2f5e1d; font-weight: bold; transition: 0.1s;
+    }
+    .ex-done.checked { background: #e1efd6; border-color: #6f9e55; }
+
+    .progress-chart-wrap { height: 240px; margin-bottom: 2rem; background: #fafcff; padding: 1rem 0.5rem; border-radius: 20px; border: 1px solid #ecf0f5; }
+
+    .attempts-list { display: flex; flex-direction: column; gap: 10px; }
+    .attempt-entry {
+      padding: 1rem 1.2rem; background: white; border-radius: 18px;
+      border: 1px solid #e5ecf3; display: flex; justify-content: space-between;
+      align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+    }
+    .attempt-entry .at-time { font-size: 1.5rem; font-weight: 600; color: #0f1a29; }
+    .at-result { padding: 4px 12px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; }
+    .result-pass { background: #e3f0da; color: #2c6217; }
+    .result-progress { background: #e5eef9; color: #195a9c; }
+
+    .target-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 40px; font-size: 0.75rem;
+      font-weight: 600; letter-spacing: 0.3px; background: #eef2f7; color: #2e4a70;
+    }
+
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(10, 20, 30, 0.3); backdrop-filter: blur(5px);
+      z-index: 100; display: none; align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: white; border-radius: 36px; padding: 2rem; max-width: 400px; width: 90%;
+      box-shadow: 0 30px 50px -20px rgba(0,0,0,0.3); border: 1px solid #ffffff50;
+    }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 1.5rem; }
+
+    .streak { background: #f3f9fc; border-radius: 40px; padding: 0.5rem 1rem; display: inline-flex; align-items: center; gap: 8px; }
+    .tip-box {
+      background: #f4f9fe; border-left: 5px solid #2b6eb3; border-radius: 16px;
+      padding: 1rem 1.2rem; font-size: 0.9rem; color: #1d364f;
+    }
+    
+    .milestone-card {
+      background: linear-gradient(135deg, #f5f8ff 0%, #eef3fa 100%);
+      border-radius: 20px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="hero">
+    <h1>Bring Sally Up <span id="categoryDisplay"></span></h1>
+    <p>Dynamic 14‑day plan · adapts to your baseline using sports science progression</p>
+  </div>
+
+  <div class="baseline-bar">
+    <span style="font-size:0.9rem; font-weight:500; color:#2a405c;">Your baseline</span>
+    <div class="baseline-input-group">
+      <input type="number" class="time-input" id="baseMin" value="1" min="0" max="9">
+      <span class="time-sep">m</span>
+      <input type="number" class="time-input" id="baseSec" value="21" min="0" max="59">
+      <span class="time-sep">s</span>
+    </div>
+    <button class="btn-primary" onclick="updateBaseline()">Update plan</button>
+    <span id="baselineLabel" style="margin-left:auto; font-weight:500;"></span>
+  </div>
+
+  <div class="confidence-meter" id="confidenceMeter">
+    <span style="font-size:0.85rem; font-weight:500;">Success confidence</span>
+    <div class="confidence-bar">
+      <div class="confidence-fill" id="confidenceFill" style="width:70%"></div>
+    </div>
+    <span id="confidenceText" style="font-size:0.85rem; font-weight:600;">70%</span>
+  </div>
+
+  <div class="metrics" id="metricsRow"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('plan')">📋 14‑day plan</button>
+    <button class="tab" onclick="switchTab('today')">🎯 Today</button>
+    <button class="tab" onclick="switchTab('progress')">📈 Progress</button>
+    <button class="tab" onclick="switchTab('guide')">🧠 Guide</button>
+  </div>
+
+  <!-- PLAN TAB -->
+  <div class="tab-content active" id="tab-plan">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#b7cef0"></div>Hold builder</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f5cf9a"></div>Fatigue</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#c7dfb2"></div>Simulation</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#d8dcd0"></div>Recovery</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f2c1d1; border:2px solid #c13b6b"></div>Attempt</div>
+    </div>
+    <div id="streakBar" class="streak" style="margin-bottom:1.5rem;"></div>
+    <div class="day-grid" id="dayGrid"></div>
+    <p style="font-size:0.75rem; color:#6b7e97; margin:0.5rem 0 1.5rem;">Tap a day to mark complete · today is highlighted</p>
+    <div id="nextUpCard"></div>
+    <div class="milestone-card" id="milestoneCard"></div>
+  </div>
+
+  <!-- TODAY TAB -->
+  <div class="tab-content" id="tab-today">
+    <div id="todayContent"></div>
+  </div>
+
+  <!-- PROGRESS TAB -->
+  <div class="tab-content" id="tab-progress">
+    <div class="progress-chart-wrap">
+      <canvas id="progressChart"></canvas>
+    </div>
+    <p class="section-title">Attempt history</p>
+    <div class="attempts-list" id="attemptsList"></div>
+    <div style="margin-top:1.5rem; text-align:center">
+      <button class="btn-secondary" onclick="getAIAnalysis()">✨ Get AI analysis</button>
+    </div>
+  </div>
+
+  <!-- GUIDE TAB -->
+  <div class="tab-content" id="tab-guide">
+    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+      <div class="day-detail">
+        <h3>🧩 Type A — Hold Builder</h3>
+        <div class="desc">Bottom holds, slow push‑ups, plank. Dynamic intensity based on your level.</div>
+        <div class="tip-box">Each session: add +5s to holds or +1-2 reps. Small gains compound into big endurance jumps.</div>
+      </div>
+      <div class="day-detail">
+        <h3>⚡ Type B — Fatigue Resistance</h3>
+        <div class="desc">Ladders, sub‑maximal sets. Trains your body to keep firing through accumulated burn.</div>
+        <div class="tip-box">Never train to failure here. Stop 2-3 reps before collapse to preserve recovery.</div>
+      </div>
+      <div class="day-detail">
+        <h3>🎮 Type C — Simulation</h3>
+        <div class="desc">Partial run (60-85% of song depending on phase). Controlled stop before failure.</div>
+        <div class="tip-box">This is NOT a full attempt. Stopping early on purpose keeps confidence high.</div>
+      </div>
+      <div class="day-detail">
+        <h3>🌿 Type D — Recovery</h3>
+        <div class="desc">Easy reps, short holds. Keep the adaptation signal without adding fatigue.</div>
+      </div>
+      <div class="day-detail" style="border-color:#d47a9b">
+        <h3>🏆 Attempt Days (5, 10, 14)</h3>
+        <div class="desc">Full song attempts. Targets adjust dynamically to your baseline.</div>
+        <div class="tip-box" style="border-left-color:#d47a9b">
+          <strong>Technique during attempt:</strong><br>
+          — Stay tight in the bottom, never fully relax<br>
+          — Slight forward lean engages chest more<br>
+          — Breathe slow and steady, never hold breath<br>
+          — Micro-adjust position during long holds<br>
+          — Exhale on the way up, inhale on the way down
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="dayModal">
+  <div class="modal">
+    <h3 id="modalTitle">Day 1</h3>
+    <p id="modalDesc" style="margin:0.75rem 0;"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" id="modalConfirm">Mark complete</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+(function(){
+  const TARGET = 210;
+  
+  // ========== STATE ==========
+  let state = {
+    baseline: 81,
+    startDate: new Date().toISOString().split('T')[0],
+    completed: [],
+    attempts: [],
+    exDone: {}
+  };
+  
+  let dynamicPlan = null;
+  
+  // ========== DYNAMIC PLAN GENERATOR ==========
+  function analyzeBaseline(secs) {
+    let category, weeklyImprovement, confidence;
+    
+    if (secs <= 60) {
+      category = 'beginner';
+      weeklyImprovement = 1.18;
+      confidence = Math.min(0.50 + (secs / 200), 0.65);
+    } else if (secs <= 120) {
+      category = 'novice';
+      weeklyImprovement = 1.12;
+      confidence = 0.65 + ((secs - 60) / 300);
+    } else if (secs <= 180) {
+      category = 'intermediate';
+      weeklyImprovement = 1.08;
+      confidence = 0.80 + ((secs - 120) / 400);
+    } else {
+      category = 'advanced';
+      weeklyImprovement = 1.05;
+      confidence = 0.92 + ((secs - 180) / 500);
+    }
+    
+    confidence = Math.min(0.99, Math.max(0.40, confidence));
+    return { category, weeklyImprovement, confidence };
+  }
+  
+  function calculateTargets(baseline, category) {
+    let day5Target, day10Target;
+    
+    if (category === 'beginner') {
+      day5Target = Math.min(baseline * 1.20, TARGET * 0.45);
+      day10Target = Math.min(day5Target * 1.25, TARGET * 0.70);
+    } else if (category === 'novice') {
+      day5Target = Math.min(baseline * 1.15, TARGET * 0.55);
+      day10Target = Math.min(day5Target * 1.20, TARGET * 0.80);
+    } else if (category === 'intermediate') {
+      day5Target = Math.min(baseline * 1.12, TARGET * 0.70);
+      day10Target = Math.min(day5Target * 1.15, TARGET * 0.90);
+    } else {
+      day5Target = Math.min(baseline * 1.08, TARGET * 0.85);
+      day10Target = Math.min(day5Target * 1.10, TARGET * 0.97);
+    }
+    
+    return {
+      day5: Math.round(day5Target),
+      day10: Math.round(day10Target),
+      day14: TARGET
+    };
+  }
+  
+  function generateDynamicPlan(baseline) {
+    const analysis = analyzeBaseline(baseline);
+    const targets = calculateTargets(baseline, analysis.category);
+    
+    const baseStructure = [
+      { day: 1, type: 'A', label: 'Hold builder' },
+      { day: 2, type: 'B', label: 'Fatigue resistance' },
+      { day: 3, type: 'rest', label: 'Rest' },
+      { day: 4, type: 'C', label: 'Simulation' },
+      { day: 5, type: 'T', label: 'Attempt 1', attempt: true },
+      { day: 6, type: 'A', label: 'Hold builder' },
+      { day: 7, type: 'B', label: 'Fatigue resistance' },
+      { day: 8, type: 'rest', label: 'Rest' },
+      { day: 9, type: 'C', label: 'Simulation' },
+      { day: 10, type: 'T', label: 'Attempt 2', attempt: true },
+      { day: 11, type: 'D', label: 'Recovery' },
+      { day: 12, type: 'D', label: 'Recovery' },
+      { day: 13, type: 'rest', label: 'Rest' },
+      { day: 14, type: 'T', label: 'Final attempt', attempt: true }
+    ];
+    
+    const multipliers = {
+      A: (d) => d <= 5 ? 1.25 : (d <= 10 ? 1.35 : 1.20),
+      B: (d) => d <= 5 ? 1.10 : (d <= 10 ? 1.20 : 1.05),
+      C: (d) => d <= 5 ? 0.70 : (d <= 10 ? 0.80 : 0.85),
+      D: () => 0.45,
+      rest: () => 0.30,
+      T: () => 1.0
+    };
+    
+    const plan = baseStructure.map((item, idx) => {
+      const dayNum = idx + 1;
+      const multiplier = multipliers[item.type](dayNum);
+      const intensity = Math.round(baseline * multiplier);
+      
+      let desc = '';
+      if (item.type === 'A') {
+        const holdTime = Math.round(25 + (intensity / 8));
+        const reps = Math.round(8 + (intensity / 15));
+        const plankTime = Math.round(45 + (intensity / 5));
+        desc = `4×${holdTime-5}-${holdTime}s bottom holds · 3×${reps} slow push-ups · 3×${plankTime}s plank`;
+      } else if (item.type === 'B') {
+        const setReps = Math.round(12 + (intensity / 12));
+        desc = `4 sets push-ups @ 60% (≈${setReps} reps) · 3-4 ladder rounds with holds`;
+      } else if (item.type === 'C') {
+        const percentage = Math.round(multiplier * 100);
+        desc = `Bring Sally Up at ${percentage}% · controlled stop before failure`;
+      } else if (item.type === 'D') {
+        desc = `Easy push-ups 2×10-12 · Short holds 2×15-20s · Stay fresh`;
+      } else if (item.type === 'rest') {
+        desc = `Full rest day. Sleep well, light stretching only.`;
+      } else if (item.type === 'T') {
+        const targetTime = dayNum === 5 ? targets.day5 : (dayNum === 10 ? targets.day10 : targets.day14);
+        desc = `Full Bring Sally Up attempt. Target: ${fmtTime(targetTime)}. Go for it!`;
+      }
+      
+      return { ...item, desc, intensity };
+    });
+    
+    return { plan, analysis, targets };
+  }
+  
+  // ========== HELPERS ==========
+  function save() { 
+    try { 
+      localStorage.setItem('sallyTrackerDynamic', JSON.stringify(state)); 
+    } catch(e) {} 
+  }
+  
+  function load() {
+    try {
+      const d = localStorage.getItem('sallyTrackerDynamic');
+      if (d) state = JSON.parse(d);
+    } catch(e) {}
+    dynamicPlan = generateDynamicPlan(state.baseline);
+  }
+  
+  function todayStr() { return new Date().toISOString().split('T')[0]; }
+  
+  function dayIndex() {
+    const s = new Date(state.startDate);
+    const t = new Date(todayStr());
+    return Math.max(0, Math.min(Math.floor((t-s)/86400000), 13));
+  }
+  
+  function fmtTime(secs) { 
+    const m = Math.floor(secs/60); 
+    const s = secs%60; 
+    return `${m}:${s<10?'0':''}${s}`; 
+  }
+  
+  function parseSecs(m, s) { return (parseInt(m)||0)*60 + (parseInt(s)||0); }
+  
+  // ========== RENDER FUNCTIONS ==========
+  function renderAll() {
+    renderCategoryAndConfidence();
+    renderMetrics();
+    renderMilestones();
+    renderGrid();
+    renderNextUp();
+    
+    const activeTab = document.querySelector('.tab-content.active').id;
+    if (activeTab === 'tab-today') renderToday();
+    if (activeTab === 'tab-progress') renderProgress();
+  }
+  
+  function renderCategoryAndConfidence() {
+    const analysis = dynamicPlan.analysis;
+    const confidence = Math.round(analysis.confidence * 100);
+    
+    const categoryMap = {
+      'beginner': 'badge-beginner',
+      'novice': 'badge-novice',
+      'intermediate': 'badge-intermediate',
+      'advanced': 'badge-advanced'
+    };
+    
+    document.getElementById('categoryDisplay').innerHTML = 
+      `<span class="category-badge ${categoryMap[analysis.category]}">${analysis.category}</span>`;
+    
+    document.getElementById('confidenceFill').style.width = confidence + '%';
+    document.getElementById('confidenceText').textContent = confidence + '%';
+  }
+  
+  function renderMetrics() {
+    const baseline = state.baseline;
+    const done = state.completed.length;
+    const best = state.attempts.length ? Math.max(...state.attempts.map(a=>a.secs)) : baseline;
+    const improvement = best - baseline;
+    const targets = dynamicPlan.targets;
+    
+    document.getElementById('metricsRow').innerHTML = `
+      <div class="metric"><div class="label">Baseline</div><div class="value">${fmtTime(baseline)}</div></div>
+      <div class="metric"><div class="label">Best attempt</div><div class="value">${state.attempts.length?fmtTime(best):'—'}</div><div class="sub">${improvement>0?'+'+fmtTime(improvement):''}</div></div>
+      <div class="metric"><div class="label">Completed</div><div class="value">${done}<span style="font-size:1rem;">/14</span></div></div>
+      <div class="metric"><div class="label">Target Day 14</div><div class="value">${fmtTime(targets.day14)}</div></div>
+    `;
+    document.getElementById('baselineLabel').textContent = fmtTime(baseline);
+  }
+  
+  function renderMilestones() {
+    const targets = dynamicPlan.targets;
+    const analysis = dynamicPlan.analysis;
+    document.getElementById('milestoneCard').innerHTML = `
+      <div style="font-weight:600; margin-bottom:12px;">🎯 Your personalized targets</div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; text-align:center;">
+        <div><div style="font-size:0.75rem; color:#5f7390;">Day 5</div><div style="font-size:1.4rem; font-weight:600;">${fmtTime(targets.day5)}</div></div>
+        <div><div style="font-size:0.75rem; color:#5f7390;">Day 10</div><div style="font-size:1.4rem; font-weight:600;">${fmtTime(targets.day10)}</div></div>
+        <div><div style="font-size:0.75rem; color:#5f7390;">Day 14</div><div style="font-size:1.4rem; font-weight:600; color:#2c6217;">${fmtTime(targets.day14)}</div></div>
+      </div>
+      <p style="font-size:0.8rem; color:#6b7e97; margin-top:12px;">
+        Based on ${analysis.category} progression (${Math.round((analysis.weeklyImprovement-1)*100)}% weekly improvement)
+      </p>
+    `;
+  }
+  
+  function renderGrid() {
+    const grid = document.getElementById('dayGrid');
+    const today = dayIndex();
+    
+    let streak = 0, idx = today;
+    while(idx >= 0 && state.completed.includes(idx)) { streak++; idx--; }
+    document.getElementById('streakBar').innerHTML = streak ? 
+      `🔥 ${streak}-day streak · keep going` : `✨ Start your streak today`;
+    
+    grid.innerHTML = '';
+    for(let i = 0; i < 14; i++) {
+      const d = dynamicPlan.plan[i];
+      const done = state.completed.includes(i);
+      const isToday = i === today;
+      let cls = 'day-cell';
+      if(done) cls += ' done';
+      else if(d.attempt) cls += ' test-day';
+      if(isToday) cls += ' today';
+      
+      grid.innerHTML += `<div class="${cls}" onclick="openModal(${i})">
+        <div class="day-num">${i+1}</div>
+        <div class="day-type">${d.type === 'rest' ? 'rest' : d.type}</div>
+        ${done ? '<div class="check">✓</div>' : ''}
+      </div>`;
+    }
+  }
+  
+  function renderNextUp() {
+    const today = dayIndex();
+    const next = dynamicPlan.plan[today];
+    document.getElementById('nextUpCard').innerHTML = `
+      <div class="day-detail">
+        <h3>Day ${today+1} · ${next.label} <span class="target-badge">${next.type}</span></h3>
+        <div class="desc">${next.desc}</div>
+        <button class="btn-secondary" onclick="switchTab('today')">Open today's session →</button>
+      </div>
+    `;
+  }
+  
+  function getExercisesForDay(dayIdx) {
+    const dayPlan = dynamicPlan.plan[dayIdx];
+    const baseline = state.baseline;
+    const intensity = dayPlan.intensity;
+    
+    if (dayPlan.type === 'A') {
+      const holdTime = Math.round(25 + (intensity / 8));
+      const reps = Math.round(8 + (intensity / 15));
+      const plankTime = Math.round(45 + (intensity / 5));
+      return [
+        { name: 'Bottom hold', target: `4×${holdTime-5}-${holdTime}s` },
+        { name: 'Slow push-ups (3s down)', target: `3×${reps} reps` },
+        { name: 'Plank hold', target: `3×${plankTime}s` }
+      ];
+    } else if (dayPlan.type === 'B') {
+      const setReps = Math.round(12 + (intensity / 12));
+      return [
+        { name: 'Push-ups @ 60% max', target: `4×${setReps} reps` },
+        { name: 'Ladder: 6 reps + 10s hold', target: '3 rounds' },
+        { name: 'Ladder: 6 reps + 15s hold', target: '3 rounds' }
+      ];
+    } else if (dayPlan.type === 'C') {
+      const percentage = Math.round((intensity / baseline) * 100);
+      return [
+        { name: 'Partial Sally run', target: `${percentage}% of song` },
+        { name: 'Controlled stop', target: 'before failure' }
+      ];
+    } else if (dayPlan.type === 'D') {
+      return [
+        { name: 'Easy push-ups', target: '2×10-12 reps' },
+        { name: 'Short holds', target: '2×15-20s' }
+      ];
+    } else if (dayPlan.type === 'T') {
+      return [
+        { name: 'Full Bring Sally Up', target: 'Complete song' },
+        { name: 'Log time below', target: 'critical data' }
+      ];
+    }
+    return [];
+  }
+  
+  function renderToday() {
+    const today = dayIndex();
+    const d = dynamicPlan.plan[today];
+    const exKey = 'day' + today;
+    if (!state.exDone[exKey]) state.exDone[exKey] = {};
+    
+    let exHTML = '';
+    getExercisesForDay(today).forEach((ex, j) => {
+      const done = state.exDone[exKey][j];
+      exHTML += `<div class="ex-row">
+        <div class="ex-done ${done ? 'checked' : ''}" onclick="toggleEx(${today},${j})">${done ? '✓' : ''}</div>
+        <span class="ex-name">${ex.name}</span>
+        <span class="ex-target">${ex.target}</span>
+      </div>`;
+    });
+    
+    const targets = dynamicPlan.targets;
+    const targetForToday = today === 4 ? targets.day5 : (today === 9 ? targets.day10 : targets.day14);
+    
+    let attemptHTML = d.attempt ? `
+      <div style="margin:1.5rem 0 0.5rem;">
+        <label style="font-weight:500;">🎯 Target: ${fmtTime(targetForToday)}</label>
+        <div style="display:flex;gap:8px;margin:8px 0">
+          <input id="atMin" placeholder="m" class="time-input" style="width:70px"><span>m</span>
+          <input id="atSec" placeholder="s" class="time-input" style="width:70px">
+        </div>
+        <select id="atFailure" style="width:100%;padding:10px;border-radius:30px;border:1px solid #dce3ec;margin:8px 0;">
+          <option value="chest">Chest burned out</option>
+          <option value="arms">Arms gave out</option>
+          <option value="breath">Lost breath control</option>
+          <option value="complete">Completed! 🎉</option>
+        </select>
+        <button class="btn-primary" onclick="logAttempt()">Save attempt</button>
+      </div>
+    ` : '';
+    
+    const tips = [
+      'Breathe steady · exhale up, inhale down',
+      'Focus on form, not speed',
+      'Rest completely · adaptation happens now',
+      'Stop on purpose · preserve confidence',
+      'Stay tight at the bottom · micro-adjust',
+      'Trust the progression · gains compound',
+      'Ladder sets: the hold is key',
+      'Full recovery · next 5 days critical',
+      'Visualize completing the song',
+      'Note exactly when you stopped',
+      'Light day · resist training harder',
+      'Absolute minimum · keep muscles warm',
+      'Rest · sleep early · final attempt tomorrow',
+      'Everything prepared you for this. Conquer.'
+    ];
+    
+    document.getElementById('todayContent').innerHTML = `
+      <div class="day-detail">
+        <h3>Day ${today+1} · ${d.label}</h3>
+        <div class="desc">${d.desc}</div>
+        <div class="exercises">${exHTML}</div>
+        ${attemptHTML}
+        <button class="btn-secondary" style="margin-top:1rem;" onclick="confirmDay(${today})">✓ Mark day complete</button>
+      </div>
+      <div class="tip-box">💡 ${tips[today]}</div>
+    `;
+  }
+  
+  function renderProgress() {
+    const list = document.getElementById('attemptsList');
+    if (!state.attempts.length) {
+      list.innerHTML = '<div style="padding:2rem;text-align:center;color:#6a7f99;">Log your first attempt to see progress</div>';
+    } else {
+      list.innerHTML = state.attempts.map(a => {
+        const isPB = a.secs === Math.max(...state.attempts.map(x => x.secs));
+        return `<div class="attempt-entry">
+          <div><div class="at-time">${fmtTime(a.secs)}</div><div>Day ${a.day} · ${a.failure}</div></div>
+          <span class="at-result ${isPB ? 'result-pass' : 'result-progress'}">${isPB ? 'PB' : 'progress'}</span>
+        </div>`;
+      }).join('');
+    }
+    
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    if (window._chart) window._chart.destroy();
+    
+    const points = [{ day: 0, secs: state.baseline }, ...state.attempts.map(a => ({ day: a.day, secs: a.secs }))];
+    
+    window._chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: points.map(p => p.day === 0 ? 'Start' : 'Day ' + p.day),
+        datasets: [
+          { 
+            label: 'Your time', 
+            data: points.map(p => p.secs), 
+            borderColor: '#1d4e89', 
+            tension: 0.3, 
+            pointBackgroundColor: '#1d4e89',
+            fill: false 
+          },
+          { 
+            label: 'Target (3:30)', 
+            data: points.map(() => TARGET), 
+            borderColor: '#6f9e55', 
+            borderDash: [5, 3],
+            pointRadius: 0 
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            ticks: { callback: v => fmtTime(v) },
+            min: Math.max(0, state.baseline - 30),
+            max: Math.max(TARGET + 10, Math.max(...points.map(p => p.secs)) + 20)
+          }
+        }
+      }
+    });
+  }
+  
+  // ========== ACTIONS ==========
+  window.updateBaseline = function() {
+    const m = document.getElementById('baseMin').value;
+    const s = document.getElementById('baseSec').value;
+    const newBaseline = parseSecs(m, s);
+    
+    state.baseline = newBaseline;
+    dynamicPlan = generateDynamicPlan(newBaseline);
+    
+    save();
+    renderAll();
+  };
+  
+  window.switchTab = function(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      const names = ['plan', 'today', 'progress', 'guide'];
+      t.classList.toggle('active', names[i] === name);
+    });
+    document.querySelectorAll('.tab-content').forEach(c => {
+      c.classList.toggle('active', c.id === 'tab-' + name);
+    });
+    
+    if (name === 'progress') renderProgress();
+    if (name === 'today') renderToday();
+  };
+  
+  window.toggleEx = function(day, idx) {
+    const k = 'day' + day;
+    if (!state.exDone[k]) state.exDone[k] = {};
+    state.exDone[k][idx] = !state.exDone[k][idx];
+    save();
+    renderToday();
+  };
+  
+  window.logAttempt = function() {
+    const m = document.getElementById('atMin')?.value;
+    const s = document.getElementById('atSec')?.value;
+    const failure = document.getElementById('atFailure')?.value;
+    if (!m && !s) return;
+    
+    const secs = parseSecs(m, s);
+    const today = dayIndex();
+    state.attempts.push({ date: todayStr(), secs, failure, day: today + 1 });
+    
+    if (secs >= TARGET) {
+      alert('🎉 CONGRATULATIONS! You completed the full challenge! Amazing achievement!');
+    } else if (secs >= dynamicPlan.targets.day14 * 0.9) {
+      alert('🔥 So close! You're almost there. The final attempt will seal it!');
+    }
+    
+    save();
+    renderAll();
+    switchTab('progress');
+  };
+  
+  let pendingDay = null;
+  window.openModal = function(i) {
+    pendingDay = i;
+    const d = dynamicPlan.plan[i];
+    document.getElementById('modalTitle').textContent = `Day ${i+1} · ${d.label}`;
+    document.getElementById('modalDesc').textContent = d.desc;
+    document.getElementById('modalConfirm').onclick = () => confirmDay(i);
+    document.getElementById('dayModal').classList.add('open');
+  };
+  
+  window.closeModal = function() {
+    document.getElementById('dayModal').classList.remove('open');
+  };
+  
+  window.confirmDay = function(i) {
+    if (!state.completed.includes(i)) state.completed.push(i);
+    save();
+    closeModal();
+    renderAll();
+  };
+  
+  window.getAIAnalysis = function() {
+    const analysis = dynamicPlan.analysis;
+    const best = state.attempts.length ? Math.max(...state.attempts.map(a => a.secs)) : state.baseline;
+    const progress = best - state.baseline;
+    
+    alert(`📊 AI Analysis:\n\nCategory: ${analysis.category}\nBaseline: ${fmtTime(state.baseline)}\nCurrent best: ${fmtTime(best)}\nProgress: +${fmtTime(progress)}\n\n${progress > 30 ? 'Excellent progress! You're on track to complete the challenge.' : 'Stay consistent! The biggest gains come in week 2.'}`);
+  };
+  
+  // ========== INIT ==========
+  load();
+  document.getElementById('baseMin').value = Math.floor(state.baseline / 60);
+  document.getElementById('baseSec').value = state.baseline % 60;
+  renderAll();
+  
+  document.getElementById('dayModal').onclick = e => {
+    if (e.target === document.getElementById('dayModal')) closeModal();
+  };
+})();
+</script>
+</body>
+</html>

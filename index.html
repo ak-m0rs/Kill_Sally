@@ -335,7 +335,6 @@
     <button class="tab" onclick="switchTab('guide')">🧠 Guide</button>
   </div>
 
-  <!-- PLAN TAB -->
   <div class="tab-content active" id="tab-plan">
     <div class="legend">
       <div class="legend-item"><div class="legend-dot" style="background:#b7cef0"></div>Hold builder</div>
@@ -351,12 +350,10 @@
     <div class="milestone-card" id="milestoneCard"></div>
   </div>
 
-  <!-- TODAY TAB -->
   <div class="tab-content" id="tab-today">
     <div id="todayContent"></div>
   </div>
 
-  <!-- PROGRESS TAB -->
   <div class="tab-content" id="tab-progress">
     <div class="progress-chart-wrap">
       <canvas id="progressChart"></canvas>
@@ -368,7 +365,6 @@
     </div>
   </div>
 
-  <!-- GUIDE TAB -->
   <div class="tab-content" id="tab-guide">
     <div style="display:flex; flex-direction:column; gap:1.25rem;">
       <div class="day-detail">
@@ -406,7 +402,6 @@
   </div>
 </div>
 
-<!-- Modal -->
 <div class="modal-bg" id="dayModal">
   <div class="modal">
     <h3 id="modalTitle">Day 1</h3>
@@ -585,9 +580,12 @@
     renderGrid();
     renderNextUp();
     
-    const activeTab = document.querySelector('.tab-content.active').id;
-    if (activeTab === 'tab-today') renderToday();
-    if (activeTab === 'tab-progress') renderProgress();
+    const activeTabContainer = document.querySelector('.tab-content.active');
+    if(activeTabContainer) {
+        const activeTab = activeTabContainer.id;
+        if (activeTab === 'tab-today') renderToday();
+        if (activeTab === 'tab-progress') renderProgress();
+    }
   }
   
   function renderCategoryAndConfidence() {
@@ -681,7 +679,6 @@
   
   function getExercisesForDay(dayIdx) {
     const dayPlan = dynamicPlan.plan[dayIdx];
-    const baseline = state.baseline;
     const intensity = dayPlan.intensity;
     
     if (dayPlan.type === 'A') {
@@ -701,7 +698,7 @@
         { name: 'Ladder: 6 reps + 15s hold', target: '3 rounds' }
       ];
     } else if (dayPlan.type === 'C') {
-      const percentage = Math.round((intensity / baseline) * 100);
+      const percentage = Math.round((intensity / state.baseline) * 100);
       return [
         { name: 'Partial Sally run', target: `${percentage}% of song` },
         { name: 'Controlled stop', target: 'before failure' }
@@ -720,7 +717,7 @@
     return [];
   }
   
-  function renderToday() {
+  window.renderToday = function() {
     const today = dayIndex();
     const d = dynamicPlan.plan[today];
     const exKey = 'day' + today;
@@ -785,7 +782,7 @@
     `;
   }
   
-  function renderProgress() {
+  window.renderProgress = function() {
     const list = document.getElementById('attemptsList');
     if (!state.attempts.length) {
       list.innerHTML = '<div style="padding:2rem;text-align:center;color:#6a7f99;">Log your first attempt to see progress</div>';
@@ -885,9 +882,10 @@
     state.attempts.push({ date: todayStr(), secs, failure, day: today + 1 });
     
     if (secs >= TARGET) {
-      alert('🎉 CONGRATULATIONS! You completed the full challenge! Amazing achievement!');
+      alert("🎉 CONGRATULATIONS! You completed the full challenge! Amazing achievement!");
     } else if (secs >= dynamicPlan.targets.day14 * 0.9) {
-      alert('🔥 So close! You're almost there. The final attempt will seal it!');
+      // Fixed with double quotes to prevent syntax error from ' in "You're"
+      alert("🔥 So close! You're almost there. The final attempt will seal it!");
     }
     
     save();
@@ -895,9 +893,7 @@
     switchTab('progress');
   };
   
-  let pendingDay = null;
   window.openModal = function(i) {
-    pendingDay = i;
     const d = dynamicPlan.plan[i];
     document.getElementById('modalTitle').textContent = `Day ${i+1} · ${d.label}`;
     document.getElementById('modalDesc').textContent = d.desc;
@@ -921,7 +917,15 @@
     const best = state.attempts.length ? Math.max(...state.attempts.map(a => a.secs)) : state.baseline;
     const progress = best - state.baseline;
     
-    alert(`📊 AI Analysis:\n\nCategory: ${analysis.category}\nBaseline: ${fmtTime(state.baseline)}\nCurrent best: ${fmtTime(best)}\nProgress: +${fmtTime(progress)}\n\n${progress > 30 ? 'Excellent progress! You're on track to complete the challenge.' : 'Stay consistent! The biggest gains come in week 2.'}`);
+    // Fixed using Backticks for safer multi-line string and quotes
+    alert(`📊 AI Analysis:
+
+Category: ${analysis.category}
+Baseline: ${fmtTime(state.baseline)}
+Current best: ${fmtTime(best)}
+Progress: +${fmtTime(progress)}
+
+${progress > 30 ? "Excellent progress! You're on track to complete the challenge." : "Stay consistent! The biggest gains come in week 2."}`);
   };
   
   // ========== INIT ==========
